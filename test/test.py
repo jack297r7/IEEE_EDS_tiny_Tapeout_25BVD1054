@@ -20,7 +20,7 @@ async def test_project(dut):
 
     dut.rst_n.value = 0
 
-    await Timer(25, unit="us")
+    await Timer(23, unit="us")
 
     dut.rst_n.value = 1
 
