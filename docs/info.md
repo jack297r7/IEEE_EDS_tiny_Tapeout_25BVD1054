@@ -1,20 +1,14 @@
-<!---
-
-This file is used to generate your project datasheet. Please fill in the information below and delete any unused
-sections.
-
-You can also include images in this folder and reference them in the markdown. Each image must be less than
-512 kb in size, and the combined size of all images must be less than 1 MB.
--->
-
 ## How it works
 
-Explain how your project works
+This project implements a 4-bit ripple counter. Each flip-flop stage
+toggles on the falling edge of the previous stage's output, starting
+from the main clock. This produces a binary count from 0000 to 1111
+that wraps back to 0000, with each bit rippling through the chain
+with a small propagation delay characteristic of ripple counters.
 
 ## How to test
 
-Explain how to use your project
-
-## External hardware
-
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+Reset the design by pulling `rst_n` low then high. On each falling
+edge of `clk`, the 4-bit count on `uo_out[3:0]` increments by 1,
+wrapping from 1111 back to 0000. The testbench (`test.py`) verifies
+this behavior over 16 clock cycles.
