@@ -24,16 +24,16 @@ async def test_project(dut):
 
     dut.rst_n.value = 1
 
-    # allow reset release to settle before sampling begins
-    await Timer(1, unit="us")
+    # Sync to a clean clock edge before sampling starts,
+    # to avoid a race between reset release and the clock edge
+    await FallingEdge(dut.clk)
+    await Timer(100, unit="ns")
 
     expected = 0
 
     for i in range(16):
 
         await FallingEdge(dut.clk)
-        # increased settle time to allow ripple propagation
-        # through all 4 flip-flop stages before sampling
         await Timer(100, unit="ns")
 
         expected = (expected + 1) & 0xF
