@@ -24,11 +24,6 @@ async def test_project(dut):
 
     dut.rst_n.value = 1
 
-    # Sync to a clean clock edge before sampling starts,
-    # to avoid a race between reset release and the clock edge
-    await FallingEdge(dut.clk)
-    await Timer(100, unit="ns")
-
     expected = 0
 
     for i in range(16):
