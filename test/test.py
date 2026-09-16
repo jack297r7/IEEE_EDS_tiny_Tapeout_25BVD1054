@@ -24,12 +24,17 @@ async def test_project(dut):
 
     dut.rst_n.value = 1
 
+    # allow reset release to settle before sampling begins
+    await Timer(1, unit="us")
+
     expected = 0
 
     for i in range(16):
 
         await FallingEdge(dut.clk)
-        await Timer(1, unit="ns")
+        # increased settle time to allow ripple propagation
+        # through all 4 flip-flop stages before sampling
+        await Timer(100, unit="ns")
 
         expected = (expected + 1) & 0xF
 
@@ -47,7 +52,7 @@ async def test_project(dut):
     dut._log.info("Counter reached 1111")
 
     await FallingEdge(dut.clk)
-    await Timer(1, unit="ns")
+    await Timer(100, unit="ns")
 
     actual = int(dut.uo_out.value) & 0xF
 
