@@ -3,7 +3,7 @@
 
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import ClockCycles
+from cocotb.triggers import FallingEdge, Timer
 
 
 @cocotb.test()
@@ -18,19 +18,18 @@ async def test_project(dut):
     dut.ui_in.value = 0
     dut.uio_in.value = 0
 
-    dut._log.info("Reset")
-
     dut.rst_n.value = 0
-    await ClockCycles(dut.clk, 2)
-    dut.rst_n.value = 1
 
-    dut._log.info("Testing 4-bit ripple counter")
+    await Timer(25, unit="us")
+
+    dut.rst_n.value = 1
 
     expected = 0
 
     for i in range(16):
 
-        await ClockCycles(dut.clk, 1)
+        await FallingEdge(dut.clk)
+        await Timer(1, unit="ns")
 
         expected = (expected + 1) & 0xF
 
@@ -47,7 +46,8 @@ async def test_project(dut):
 
     dut._log.info("Counter reached 1111")
 
-    await ClockCycles(dut.clk, 1)
+    await FallingEdge(dut.clk)
+    await Timer(1, unit="ns")
 
     actual = int(dut.uo_out.value) & 0xF
 
